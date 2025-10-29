@@ -17,7 +17,6 @@ export default function JSONInputBox({ value, onChange, isValidJSON, onValidJSON
         onValidJSONChange(checkIsValidJson(inputValue));
     };
 
-    console.log(isValidJSON)
 
     return (
         <div>
