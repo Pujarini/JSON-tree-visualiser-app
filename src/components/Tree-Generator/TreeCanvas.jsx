@@ -3,7 +3,7 @@ import { ReactFlow, Background, BackgroundVariant, Controls, useReactFlow } from
 import '@xyflow/react/dist/style.css';
 import { layoutTree } from "../../utils/jsonTree";
 
-function TreeCanvas({ tree, focusNodeId }) {
+function TreeCanvas({ tree, focusNodeId, onNodeClick }) {
     const { setCenter } = useReactFlow();
     const { nodes, edges } = useMemo(() => layoutTree(tree), [tree]);
 
@@ -31,12 +31,15 @@ function TreeCanvas({ tree, focusNodeId }) {
                 padding: 10,
                 borderRadius: 8,
                 border: isFocused
-                    ? "2px solid rgb(59 130 246)"
+                    ? "2px solid rgb(34 197 94)"
                     : "1px solid rgba(0,0,0,0.06)",
-                boxShadow: isFocused ? "0 0 0 4px rgba(59,130,246,0.25)" : "none",
+                boxShadow: isFocused
+                    ? "0 0 0 4px rgba(34,197,94,0.25)"
+                    : "none",
                 background: bg,
                 fontSize: 16,
-                width: "fit-content"
+                width: "fit-content",
+                transition: "border 0.2s ease, box-shadow 0.2s ease",
             },
         };
     });
@@ -45,6 +48,7 @@ function TreeCanvas({ tree, focusNodeId }) {
     return (
         <div className="h-[430px] w-full rounded-2xl border border-slate-200 bg-white">
             <ReactFlow nodes={styledNodes} edges={edges} fitView minZoom={0.2}
+                onNodeClick={onNodeClick}
                 defaultEdgeOptions={{
                     markerEnd: { type: "arrowclosed" },
                 }}
