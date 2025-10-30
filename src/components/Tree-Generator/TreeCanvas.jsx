@@ -9,29 +9,29 @@ function TreeCanvas({ tree, focusNodeId }) {
 
     useEffect(() => {
         if (!focusNodeId) return;
-        const n = nodes.find((x) => x.id === focusNodeId);
-        if (n) setCenter(n.position.x, n.position.y, { zoom: 1, duration: 400 });
+        const node = nodes.find((x) => x.id === focusNodeId);
+        if (node) setCenter(node.position.x, node.position.y, { zoom: 1, duration: 400 });
     }, [focusNodeId, nodes, setCenter]);
 
 
-    const styledNodes = nodes.map((n) => {
-        let bg = "#e2e8f0"; // slate-200
-        if (n.data.kind === "key") bg = "#86efac"; // green-300
-        if (n.data.kind === "value") bg = "#fcd34d"; // amber-300
-        if (n.data.kind === "object") bg = "#93c5fd"; // blue-300
-        if (n.data.kind === "array") bg = "#a5b4fc"; // indigo-300
+    const styledNodes = nodes.map((node) => {
+        let bg = "#e2e8f0";
+        if (node.data.kind === "key") bg = "#86efac";
+        if (node.data.kind === "value") bg = "#fcd34d";
+        if (node.data.kind === "object") bg = "#93c5fd";
+        if (node.data.kind === "array") bg = "#a5b4fc";
 
-        const isFocused = n.id === focusNodeId;
+        const isFocused = node.id === focusNodeId;
 
 
         return {
-            ...n,
-            data: { label: n.data.label },
+            ...node,
+            data: { label: node.data.label },
             style: {
                 padding: 10,
                 borderRadius: 8,
                 border: isFocused
-                    ? "2px solid rgb(59 130 246)" // blue-500
+                    ? "2px solid rgb(59 130 246)"
                     : "1px solid rgba(0,0,0,0.06)",
                 boxShadow: isFocused ? "0 0 0 4px rgba(59,130,246,0.25)" : "none",
                 background: bg,
@@ -50,7 +50,6 @@ function TreeCanvas({ tree, focusNodeId }) {
                 }}
                 maxZoom={1.5}>
                 <Background color="blue" variant={BackgroundVariant.Dots} />
-                {/* <MiniMap nodeStrokeWidth={3} zoomable pannable /> */}
                 <Controls />
             </ReactFlow>
         </div>
