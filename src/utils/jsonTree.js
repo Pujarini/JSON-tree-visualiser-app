@@ -131,7 +131,7 @@ export function findNodeIdByPath(tree, parts) {
 
         if (isLast) {
             if (keyNode.children?.length === 1 && keyNode.children[0].kind === 'value') {
-                return keyNode.children[0].id;        // highlight the primitive value node
+                return keyNode.children[0].id;
             }
             return keyNode.id;
         }
@@ -139,4 +139,60 @@ export function findNodeIdByPath(tree, parts) {
     }
 
     return null;
+}
+
+export function buildNodePathMap(tree, rootLabel = "root") {
+    if (!tree) return {};
+    const map = Object.create(null);
+
+    const basePath = rootLabel && rootLabel !== "root" ? [rootLabel] : [];
+    const toPart = (lbl) => (Number.isFinite(+lbl) ? +lbl : lbl);
+
+    const setIfEmpty = (id, path) => {
+        if (!map[id]) map[id] = path;
+    };
+
+    const walkContainer = (node, currentPath) => {
+        if (!node) return;
+        if (node.kind === "object" || node.kind === "array") {
+            setIfEmpty(node.id, currentPath);
+        }
+        for (const child of node.children || []) {
+            if (child.kind === "key") {
+                walkKey(child, currentPath);
+            } else if (child.kind === "object" || child.kind === "array") {
+                setIfEmpty(child.id, currentPath);
+                walkContainer(child, currentPath);
+            } else if (child.kind === "value") {
+                setIfEmpty(child.id, currentPath);
+            }
+        }
+    };
+
+    const walkKey = (keyNode, currentPath) => {
+        const keyPath = [...currentPath, toPart(keyNode.label)];
+        setIfEmpty(keyNode.id, keyPath);
+
+        for (const gc of keyNode.children || []) {
+            if (gc.kind === "value") {
+                setIfEmpty(gc.id, keyPath);
+            } else if (gc.kind === "key") {
+                walkKey(gc, keyPath);
+            } else if (gc.kind === "object" || gc.kind === "array") {
+                setIfEmpty(gc.id, keyPath);
+                walkContainer(gc, keyPath);
+            }
+        }
+    };
+
+    walkContainer(tree, basePath);
+    return map;
+}
+export function stringifyPathParts(parts) {
+    return (
+        "$" +
+        (parts || [])
+            .map((p) => (typeof p === "number" ? `[${p}]` : `.${p}`))
+            .join("")
+    );
 }

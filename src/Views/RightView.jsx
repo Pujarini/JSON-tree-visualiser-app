@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import JSONViewer from "../components/JSONViewer";
 import TreeSearchBar from "../components/TreeSearchBar";
-import { buildTree, findNodeIdByPath, parsePath } from "../utils/jsonTree";
+import { buildNodePathMap, buildTree, findNodeIdByPath, parsePath } from "../utils/jsonTree";
 
 export default function RightView({ graphData, onReset, loading }) {
     const [query, setQuery] = useState("$.user.address.city");
@@ -13,6 +13,7 @@ export default function RightView({ graphData, onReset, loading }) {
         const label = graphData.label || "root";
         return { rootLabel: label, tree: buildTree(label, graphData.data) };
     }, [graphData]);
+
 
     useEffect(() => {
         setFocusId(null);
@@ -35,6 +36,8 @@ export default function RightView({ graphData, onReset, loading }) {
         if (!loading) onReset();
     }, [loading, onReset]);
 
+    const nodePathMap = useMemo(() => buildNodePathMap(tree, rootLabel), [tree, rootLabel]);
+
     return (
         <div className="flex w-full max-w-full flex-col gap-4">
             <TreeSearchBar
@@ -45,7 +48,7 @@ export default function RightView({ graphData, onReset, loading }) {
                 disabled={loading || !tree}
             />
 
-            <JSONViewer tree={tree} focusNodeId={focusId} loading={loading} />
+            <JSONViewer tree={tree} focusNodeId={focusId} loading={loading} nodePathMap={nodePathMap} />
 
             <div className="mt-1">
                 <button
