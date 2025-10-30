@@ -21,34 +21,45 @@ export default function JSONView() {
 
 
   const [graphData, setGraphData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onGenerate = () => {
     try {
       const parsed = JSON.parse(jsonText);
       let rootLabel = "root";
-      if (
-        parsed &&
-        typeof parsed === "object" &&
-        !Array.isArray(parsed) &&
-        Object.keys(parsed).length === 1
-      ) {
-        rootLabel = Object.keys(parsed)[0];
-        setGraphData({ data: parsed[rootLabel], label: rootLabel });
-      } else {
-        setGraphData({ data: parsed, label: "root" });
-      }
+      setLoading(true);
+      setTimeout(() => {
+        if (
+          parsed &&
+          typeof parsed === "object" &&
+          !Array.isArray(parsed) &&
+          Object.keys(parsed).length === 1
+        ) {
+          rootLabel = Object.keys(parsed)[0];
+          setGraphData({ data: parsed[rootLabel], label: rootLabel });
+        } else {
+          setGraphData({ data: parsed, label: "root" });
+        }
+
+        setLoading(false);
+      }, 3000);
     } catch {
       setGraphData(null);
     }
   };
 
+
+  const resetGraphData = () => {
+    setJsonText("");
+    setIsValidJSON(true);
+    setGraphData(null);
+  }
+
   return (
     <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-2">
-      {/* Left: Textarea + Generate button */}
       <LeftView input={jsonText} onInputChange={setJsonText} isValidJSON={isValidJSON} onValidJSONChange={setIsValidJSON} onGenerate={onGenerate} />
 
-      {/* Right: Search input + tree preview placeholder */}
-      <RightView graphData={graphData} />
+      <RightView graphData={graphData} onReset={resetGraphData} loading={loading} />
     </div>
   )
 }
