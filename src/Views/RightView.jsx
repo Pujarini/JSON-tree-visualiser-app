@@ -3,7 +3,7 @@ import SearchJSONBox from "../components/SearchJSONBox";
 import JSONViewer from "../components/JSONViewer";
 import { buildTree, findNodeIdByPath, parsePath } from "../utils/jsonTree";
 
-export default function RightView({ graphData }) {
+export default function RightView({ graphData, onReset, loading }) {
 
     const [query, setQuery] = useState("$.user.address.city");
     const [tree, setTree] = useState(null);
@@ -42,9 +42,15 @@ export default function RightView({ graphData }) {
 
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-end gap-4">
             <SearchJSONBox query={query} onChange={setQuery} noMatch={noMatch} onSearch={onSearch} />
-            <JSONViewer tree={tree} focusNodeId={focusId} />
+            <JSONViewer tree={tree} focusNodeId={focusId} loading={loading} />
+            <button
+                onClick={onReset}
+                type="button"
+                className="flex-start rounded-xl border border-red-500 text-black px-5 py-2.5 shadow hover:bg-red-700 hover:text-white focus:outline-none">
+                Reset
+            </button>
         </div>
     )
 }
