@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SearchJSONBox({ query, onChange, noMatch, onSearch }) {
+export default function TreeSearchBar({ query, onChange, noMatch, onSearch }) {
     return (
         <>
             <div className="flex items-stretch gap-2 mt-4 w-full">

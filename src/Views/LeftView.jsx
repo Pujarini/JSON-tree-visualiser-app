@@ -1,13 +1,61 @@
-import React from "react";
-import JSONInputBox from "../components/JSONInputBox";
-import GenerateJSONBtn from "../components/GenerateJSONBtn";
+import React, { useEffect, useState } from "react";
 
-export default function LeftView({ input, onInputChange, isValidJSON, onValidJSONChange, onGenerate }) {
+import GenerateTreeButton from "../components/GenerateTreeButton";
+import JSONEditor from "../components/JSONEditor";
+
+export default function LeftView({ onGenerate, resetSignal }) {
+    const [jsonText, setJsonText] = useState(`{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "address": {
+      "city": "New York",
+      "country": "USA"
+    },
+    "items": [
+      { "name": "item1" },
+      { "name": "item2" }
+    ]
+  }
+}`);
+    const [isValid, setIsValid] = useState(true);
+
+
+    useEffect(() => {
+        if (resetSignal) {
+            setJsonText("");
+            setIsValid(true);
+        }
+    }, [resetSignal]);
+
+    const handleChange = (value) => {
+        setJsonText(value);
+        try {
+            JSON.parse(value);
+            setIsValid(true);
+        } catch {
+            setIsValid(false);
+        }
+    };
+
+    const handleGenerate = () => {
+        if (isValid && jsonText.trim()) {
+            onGenerate(jsonText);
+        }
+    };
+
 
     return (
         <div className="flex flex-col gap-2">
-            <JSONInputBox value={input} onChange={onInputChange} isValidJSON={isValidJSON} onValidJSONChange={onValidJSONChange} />
-            <GenerateJSONBtn disabledBtn={isValidJSON} onClick={onGenerate} />
+            <JSONEditor
+                value={jsonText}
+                onChange={handleChange}
+                isValidJSON={isValid}
+            />
+            <GenerateTreeButton
+                disabledBtn={isValid}
+                onClick={handleGenerate}
+            />
         </div>
-    )
+    );
 }

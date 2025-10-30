@@ -1,5 +1,5 @@
 import './App.css';
-import JSONView from './components/JSONView';
+import TreeView from './components/TreeView';
 
 export default function App() {
   return (
@@ -11,7 +11,7 @@ export default function App() {
           </h1>
         </header>
 
-        <JSONView />
+        <TreeView />
       </section>
     </main>
   );

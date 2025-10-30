@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import SearchJSONBox from "../components/SearchJSONBox";
 import JSONViewer from "../components/JSONViewer";
 import { buildTree, findNodeIdByPath, parsePath } from "../utils/jsonTree";
+import TreeSearchBar from "../components/TreeSearchBar";
+
 
 export default function RightView({ graphData, onReset, loading }) {
 
@@ -43,7 +44,7 @@ export default function RightView({ graphData, onReset, loading }) {
 
     return (
         <div className="flex flex-col items-end gap-4">
-            <SearchJSONBox query={query} onChange={setQuery} noMatch={noMatch} onSearch={onSearch} />
+            <TreeSearchBar query={query} onChange={setQuery} noMatch={noMatch} onSearch={onSearch} />
             <JSONViewer tree={tree} focusNodeId={focusId} loading={loading} />
             <button
                 onClick={onReset}

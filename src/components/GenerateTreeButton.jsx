@@ -1,7 +1,8 @@
 import React from "react";
 
 
-export default function GenerateJSONBtn({ disabledBtn, onClick }) {
+export default function GenerateTreeButton({ disabledBtn, onClick }) {
+
     return (
         <div className="mt-1">
             <button
