@@ -1,43 +1,61 @@
 
-const isObject = (v) => Object.prototype.toString.call(v) === "[object Object]";
-const isArray = (v) => Array.isArray(v);
-
+const isObject = (val) => Object.prototype.toString.call(val) === "[object Object]";
+const isArray = (val) => Array.isArray(val);
 
 export function buildTree(rootLabel, value, idPrefix = "n") {
     let idCounter = 0;
     const newId = () => `${idPrefix}_${idCounter++}`;
 
-
-    function walk(label, v) {
-        if (isObject(v)) {
+    function walk(label, val) {
+        if (isObject(val)) {
             const node = { id: newId(), kind: "object", label, children: [] };
-            for (const k of Object.keys(v)) {
-                const keyNode = { id: newId(), kind: "key", label: k, children: [walk(k, v[k])] };
+
+            for (const key of Object.keys(val)) {
+                const child = val[key];
+                const keyNode = { id: newId(), kind: "key", label: key, children: [] };
+
+                if (isObject(child) || isArray(child)) {
+                    const temp = walk(key, child);
+                    keyNode.children = temp.children;
+                } else {
+                    keyNode.children.push({
+                        id: newId(),
+                        kind: "value",
+                        label: String(child),
+                        children: [],
+                    });
+                }
                 node.children.push(keyNode);
             }
             return node;
         }
-
-
-        if (isArray(v)) {
+        if (isArray(val)) {
             const node = { id: newId(), kind: "array", label, children: [] };
 
-            v.forEach((item, idx) => {
-                const child = walk(String(idx), item);
-                node.children.push(child);
-            });
+            val.forEach((item, idx) => {
+                const idxNode = { id: newId(), kind: "key", label: String(idx), children: [] };
 
+                if (isObject(item) || isArray(item)) {
+                    const temp = walk(String(idx), item);
+                    idxNode.children = temp.children;
+                } else {
+                    idxNode.children.push({
+                        id: newId(),
+                        kind: "value",
+                        label: String(item),
+                        children: [],
+                    });
+                }
+
+                node.children.push(idxNode);
+            });
             return node;
         }
-
-
-        return { id: newId(), kind: "value", label: String(v), children: [] };
+        return { id: newId(), kind: "value", label: String(val), children: [] };
     }
-
 
     return walk(rootLabel, value);
 }
-
 export function layoutTree(root, xGap = 180, yGap = 100) {
     const nodes = [];
     const edges = [];
@@ -98,16 +116,27 @@ export function parsePath(input, rootLabel) {
     }
     return parts;
 }
-
 export function findNodeIdByPath(tree, parts) {
     if (!tree) return null;
-    let node = tree;
-    for (const p of parts) {
-        const keyNode = node.children?.find(
+    let cursor = tree;
+
+    for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        const keyNode = cursor.children?.find(
             (c) => c.kind === 'key' && c.label === String(p)
         );
         if (!keyNode) return null;
-        node = keyNode.children[0];
+
+        const isLast = i === parts.length - 1;
+
+        if (isLast) {
+            if (keyNode.children?.length === 1 && keyNode.children[0].kind === 'value') {
+                return keyNode.children[0].id;        // highlight the primitive value node
+            }
+            return keyNode.id;
+        }
+        cursor = { children: keyNode.children || [] };
     }
-    return node?.id ?? null;
+
+    return null;
 }
