@@ -1,5 +1,4 @@
 import './App.css'
-import ThemeToggler from './components/ThemeToggler'
 import JSONView from './components/JSONView'
 
 function App() {
@@ -12,9 +11,6 @@ function App() {
             <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
               JSON Tree Visualizer
             </h1>
-
-            {/* Dark/Light toggle */}
-            <ThemeToggler />
           </div>
 
           {/* JSON viewer */}
