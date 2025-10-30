@@ -24,7 +24,7 @@ export default function JSONViewer({ tree, focusNodeId, loading, nodePathMap = {
     return (
         <div className="w-full">
             {copiedId && (
-                <div className="pointer-events-none absolute right-3 bottom-8 rounded-lg bg-green-600 px-5 py-4 text-xs font-medium text-white">
+                <div className="pointer-events-none absolute right-8 bottom-8 rounded-lg bg-green-600 px-5 py-4 text-xs font-medium text-white">
                     Path Copied!
                 </div>
             )}
