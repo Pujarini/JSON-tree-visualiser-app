@@ -27,13 +27,13 @@ export default function JSONInputBox({ value, onChange, isValidJSON, onValidJSON
                 id="json"
                 value={value}
                 onChange={handleChange}
-                className="min-h-[500px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 p-4 font-mono text-sm text-slate-800 outline-none ring-slate-100 focus:border-slate-300 focus:ring-2"
+                className="min-h-[480px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 p-4 font-mono text-sm text-slate-800 outline-none ring-slate-100 focus:border-slate-300 focus:ring-2"
             />
-            {isValidJSON ? (
+            {value ? isValidJSON ? (
                 <p className="text-green-500">Valid JSON</p>
             ) : (
                 <p className="text-red-500">Invalid JSON</p>
-            )}
+            ) : null}
         </div>
     )
 }

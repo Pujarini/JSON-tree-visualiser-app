@@ -3,7 +3,7 @@ import React from "react";
 
 export default function GenerateJSONBtn({ disabledBtn, onClick }) {
     return (
-        <div className="mt-4">
+        <div className="mt-1">
             <button
                 onClick={onClick}
                 type="button"
